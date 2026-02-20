@@ -1,0 +1,245 @@
+import Leftbar from "@/components/index/Leftbar";
+import Rightbar from "@/components/index/rightbar";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+
+const InitialBoard = [
+  -2,   //point1  - 2 black
+  0,   //point2
+  0,   //point3
+  0,   //point4
+  0,   //point5
+  5,   //point6   - 5 white
+  0,   //point7
+  3,   //point8   - 3 white
+  0,   //point9
+  0,   //point10
+  0,   //point11
+  -5,   //point12 - 5 black
+  5,   //point13 - 5 white
+  0,   //point14
+  0,   //point15
+  0,   //point16
+  -3,   //point17 - 3 black
+  0,   //point18
+  -5,   //point19 - 5 black
+  0,   //point20
+  0,   //point21
+  0,   //point22
+  0,   //point23
+  2,   //point24 - 2 white
+];
+
+// Point IDs in order for each quarter
+const quarterPoints = {
+  topLeft: [13, 14, 15, 16, 17, 18],
+  bottomLeft: [12, 11, 10, 9, 8, 7],
+  topRight: [19, 20, 21, 22, 23, 24],
+  bottomRight: [6, 5, 4, 3, 2, 1],
+};
+
+const Point = ({ value, pointId, onPress }) => {
+  const count = Math.abs(value);
+  const isWhite = value > 0;
+
+  return (
+    <TouchableOpacity
+      style={styles.point}
+      onPress={() => onPress(pointId)}
+      activeOpacity={0.7}
+    >
+      {Array.from({ length: count }).map((_, index) => (
+        <View
+          key={index}
+          style={[styles.checker, isWhite && styles.white]}
+        />
+      ))}
+    </TouchableOpacity>
+  );
+};
+
+export default function Index() {
+  const [board, setBoard] = useState(InitialBoard);
+
+  const handlePointPress = (pointId, diceNumber = 2) => {
+    setBoard(prevBoard => {
+      const newBoard = [...prevBoard];
+      const sourceValue = newBoard[pointId - 1];
+      const targetPointId = pointId - diceNumber; // ۵ خانه جلوتر (ID کمتر)
+      
+      // اگر خانه مبدا خالی است، هیچ کاری نکن
+      if (sourceValue === 0) {
+        return prevBoard;
+      }
+      
+      // از خانه مبدا یک مهره کم کن
+      if (sourceValue > 0) {
+        // مهره سفید
+        newBoard[pointId - 1] = sourceValue - 1;
+      } else {
+        // مهره سیاه
+        newBoard[pointId - 1] = sourceValue + 1;
+      }
+      
+      // بررسی کن که آیا خانه مقصد معتبر است (بین ۱ تا ۲۴)
+      if (targetPointId >= 1 && targetPointId <= 24) {
+        const targetValue = newBoard[targetPointId - 1];
+        
+        // به خانه مقصد یک مهره اضافه کن (همان رنگ مهره مبدا)
+        if (sourceValue > 0) {
+          // مهره سفید
+          newBoard[targetPointId - 1] = targetValue + 1;
+        } else {
+          // مهره سیاه
+          newBoard[targetPointId - 1] = targetValue - 1;
+        }
+      }
+      
+      return newBoard;
+    });
+  };
+
+  const renderQuarter = (pointIds) => {
+    return pointIds.map((pointId) => (
+      <Point key={pointId} pointId={pointId} value={board[pointId - 1]} onPress={handlePointPress} />
+    ));
+  };
+
+  return (
+    <View style={styles.board}>
+
+      <Leftbar />
+
+      {/* Left Half Board */}
+      <View style={styles.halfBoard}>
+        <View style={styles.quarterBoardTop}>
+          {renderQuarter(quarterPoints.topLeft)}
+        </View>
+
+        <View style={styles.quarterBoardBottom}>
+          {renderQuarter(quarterPoints.bottomLeft)}
+        </View>
+      </View>
+
+      {/* Statics Bar */}
+      <View style={styles.staticsBar}>
+        <View style={styles.statics}>
+          <Text style={styles.pointsRemained}>145</Text>
+          <View style={[styles.checkersOut, styles.white]} />
+        </View>
+
+        <View style={styles.doubleDiceContainer}>
+          <View style={styles.doubleDice}>
+            <Text style={styles.doubleDiceText}>64</Text>
+          </View>
+        </View>
+
+        <View style={styles.statics}>
+          <Text style={styles.pointsRemained}>153</Text>
+          <View style={styles.checkersOut} />
+        </View>
+      </View>
+
+      {/* Right Half Board */}
+      <View style={styles.halfBoard}>
+        <View style={styles.quarterBoardTop}>
+          {renderQuarter(quarterPoints.topRight)}
+        </View>
+
+        <View style={styles.quarterBoardBottom}>
+          {renderQuarter(quarterPoints.bottomRight)}
+        </View>
+      </View>
+
+      <Rightbar />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#070024',
+  },
+  board: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#070024',
+  },
+  halfBoard: {
+    width: '35%',
+    height: '100%',
+    backgroundColor: '#3e7ce3',
+  },
+  staticsBar: {
+    width: '10%',
+    height: '100%',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  quarterBoardTop: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    height: '50%',
+  },
+  quarterBoardBottom: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    height: '50%',
+  },
+  point: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    height: '90%',
+    borderWidth: 1,
+    borderColor: 'black',
+  },
+  checker: {
+    width: '80%',
+    aspectRatio: 1,
+    borderRadius: 50, // Changed from '50%' to number
+    backgroundColor: '#2e2bac',
+    marginVertical: 1,
+  },
+  white: {
+    backgroundColor: 'white',
+  },
+  doubleDiceContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  doubleDice: {
+    width: '80%',
+    aspectRatio: 1,
+    backgroundColor: '#2a44fe',
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  doubleDiceText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  statics: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+  },
+  pointsRemained: {
+    color: 'white',
+    marginBottom: 5,
+    fontSize: 12,
+  },
+  checkersOut: {
+    width: '80%',
+    aspectRatio: 1,
+    borderRadius: 50, // Changed from '50%' to number
+    backgroundColor: '#2e2bac',
+  },
+});

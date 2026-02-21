@@ -1,0 +1,49 @@
+import { View, StyleSheet } from "react-native";
+import React from "react";
+import QuarterBoard from "./QuarterBoard";
+import { quarterPoints } from "@/constants/board";
+
+const HalfBoard = ({ side, board, onPointPress }) => {
+  const isLeft = side === 'left';
+  const topQuarter = isLeft ? quarterPoints.topLeft : quarterPoints.topRight;
+  const bottomQuarter = isLeft ? quarterPoints.bottomLeft : quarterPoints.bottomRight;
+
+  return (
+    <View style={styles.halfBoard}>
+      <View style={styles.quarterBoardTop}>
+        <QuarterBoard 
+          pointIds={topQuarter} 
+          board={board} 
+          onPointPress={onPointPress} 
+        />
+      </View>
+      <View style={styles.quarterBoardBottom}>
+        <QuarterBoard 
+          pointIds={bottomQuarter} 
+          board={board} 
+          onPointPress={onPointPress} 
+        />
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  halfBoard: {
+    width: '35%',
+    height: '100%',
+    backgroundColor: '#3e7ce3',
+  },
+  quarterBoardTop: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    height: '50%',
+  },
+  quarterBoardBottom: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    height: '50%',
+  },
+});
+
+export default HalfBoard;

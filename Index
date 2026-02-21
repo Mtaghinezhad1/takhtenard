@@ -1,40 +1,58 @@
 import Leftbar from "@/components/index/Leftbar";
 import Rightbar from "@/components/index/rightbar";
-import HalfBoard from "@/components/index/HalfBoard";
-import StaticsBar from "@/components/index/StaticsBar";
-import { View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
-import { InitialBoard } from "@/constants/board";
+import { InitialBoard } from "@/constants/constants";
+
+
+import HalfBoard from "@/components/index/halfBoard";
+import StaticsBar from "@/components/index/staticsBat";
 
 export default function Index() {
   const [board, setBoard] = useState(InitialBoard);
+  const [currentTurn, setCurrentTurn] = useState(1); // 1 for white, -1 for black
+  const [movesCount, setMovesCount] = useState(0);
 
   const handlePointPress = (pointId, diceNumber = 2) => {
     setBoard(prevBoard => {
       const newBoard = [...prevBoard];
       const sourceValue = newBoard[pointId - 1];
       const targetPointId = pointId - diceNumber;
-      
+
       if (sourceValue === 0) {
         return prevBoard;
       }
-      
+
+      // Check if it's the correct turn based on piece color
+      if ((sourceValue > 0 && currentTurn !== 1) || (sourceValue < 0 && currentTurn !== -1)) {
+        return prevBoard;
+      }
+
       if (sourceValue > 0) {
         newBoard[pointId - 1] = sourceValue - 1;
       } else {
         newBoard[pointId - 1] = sourceValue + 1;
       }
-      
+
       if (targetPointId >= 1 && targetPointId <= 24) {
         const targetValue = newBoard[targetPointId - 1];
-        
+
         if (sourceValue > 0) {
           newBoard[targetPointId - 1] = targetValue + 1;
         } else {
           newBoard[targetPointId - 1] = targetValue - 1;
         }
       }
-      
+
+      // Increment moves count and check if turn should switch
+      const newMovesCount = movesCount + 1;
+      setMovesCount(newMovesCount);
+
+      if (newMovesCount >= 2) {
+        setCurrentTurn(currentTurn === 1 ? -1 : 1);
+        setMovesCount(0);
+      }
+
       return newBoard;
     });
   };

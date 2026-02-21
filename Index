@@ -1,0 +1,60 @@
+import Leftbar from "@/components/index/Leftbar";
+import Rightbar from "@/components/index/rightbar";
+import HalfBoard from "@/components/index/HalfBoard";
+import StaticsBar from "@/components/index/StaticsBar";
+import { View, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { InitialBoard } from "@/constants/board";
+
+export default function Index() {
+  const [board, setBoard] = useState(InitialBoard);
+
+  const handlePointPress = (pointId, diceNumber = 2) => {
+    setBoard(prevBoard => {
+      const newBoard = [...prevBoard];
+      const sourceValue = newBoard[pointId - 1];
+      const targetPointId = pointId - diceNumber;
+      
+      if (sourceValue === 0) {
+        return prevBoard;
+      }
+      
+      if (sourceValue > 0) {
+        newBoard[pointId - 1] = sourceValue - 1;
+      } else {
+        newBoard[pointId - 1] = sourceValue + 1;
+      }
+      
+      if (targetPointId >= 1 && targetPointId <= 24) {
+        const targetValue = newBoard[targetPointId - 1];
+        
+        if (sourceValue > 0) {
+          newBoard[targetPointId - 1] = targetValue + 1;
+        } else {
+          newBoard[targetPointId - 1] = targetValue - 1;
+        }
+      }
+      
+      return newBoard;
+    });
+  };
+
+  return (
+    <View style={styles.board}>
+      <Leftbar />
+      <HalfBoard side="left" board={board} onPointPress={handlePointPress} />
+      <StaticsBar />
+      <HalfBoard side="right" board={board} onPointPress={handlePointPress} />
+      <Rightbar />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  board: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#070024',
+  },
+});

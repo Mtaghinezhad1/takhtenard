@@ -28,12 +28,14 @@ export default function Index() {
         return prevBoard;
       }
 
+      //move checker from this point
       if (sourceValue > 0) {
         newBoard[pointId - 1] = sourceValue - 1;
       } else {
         newBoard[pointId - 1] = sourceValue + 1;
       }
 
+      //move checker to this point 
       if (targetPointId >= 1 && targetPointId <= 24) {
         const targetValue = newBoard[targetPointId - 1];
 

@@ -17,7 +17,15 @@ export default function Index() {
     setBoard(prevBoard => {
       const newBoard = [...prevBoard];
       const sourceValue = newBoard[pointId - 1];
-      const targetPointId = pointId - diceNumber;
+
+    
+      //set movement direction according to checker's color
+      let targetPointId;
+      if (sourceValue > 0) { //white checker
+        targetPointId = pointId - diceNumber; //move towards smaller points
+      } else if (sourceValue < 0) { //black checker
+        targetPointId = pointId + diceNumber; //move towards bigger points
+      }
 
       if (sourceValue === 0) {
         return prevBoard;

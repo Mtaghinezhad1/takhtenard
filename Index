@@ -10,56 +10,67 @@ import StaticsBar from "@/components/index/staticsBat";
 
 export default function Index() {
   const [board, setBoard] = useState(InitialBoard);
-  const [currentTurn, setCurrentTurn] = useState(1); // 1 for white, -1 for black
+  const [currentTurn, setCurrentTurn] = useState("white");
   const [movesCount, setMovesCount] = useState(0);
+
+  // تابع اجرای حرکت
+  const makeMove = (board, fromPoint, diceNumber, currentTurn, prevBoard) => {
+    const newBoard = [...board];
+
+    // محاسبه نقطه مقصد
+    let targetPoint;
+    if (currentTurn == "white") {
+      targetPoint = fromPoint - diceNumber;
+    } else {
+      targetPoint = fromPoint + diceNumber;
+    }
+
+    const sourceValue = newBoard[fromPoint - 1];
+    const targetValue = newBoard[targetPoint - 1];
+
+    // Check if it's the correct turn based on piece color
+    if ((sourceValue > 0 && currentTurn !== "white") || (sourceValue < 0 && currentTurn !== "black")) {
+      return prevBoard;
+    }
+
+    // کاهش مهره از مبدا
+    if (sourceValue > 0) {
+      newBoard[fromPoint - 1] = sourceValue - 1;
+    } else {
+      newBoard[fromPoint - 1] = sourceValue + 1;
+    }
+
+    // افزایش مهره به مقصد (با در نظر گرفتن خوردن مهره حریف)
+    if (sourceValue > 0) {
+      // اگر در مقصد مهره حریف تنها باشد (blot)
+      if (targetValue === -1) {
+        // مهره حریف خورده می‌شود و به bar می‌رود
+        // TODO: منطق ارسال به bar را اضافه کنید
+        newBoard[targetPoint - 1] = 1;
+      } else {
+        newBoard[targetPoint - 1] = targetValue + 1;
+      }
+    } else {
+      if (targetValue === 1) {
+        newBoard[targetPoint - 1] = -1;
+      } else {
+        newBoard[targetPoint - 1] = targetValue - 1;
+      }
+    }
+
+    return newBoard;
+  };
 
   const handlePointPress = (pointId, diceNumber = 2) => {
     setBoard(prevBoard => {
-      const newBoard = [...prevBoard];
-      const sourceValue = newBoard[pointId - 1];
-
-    
-      //set movement direction according to checker's color
-      let targetPointId;
-      if (sourceValue > 0) { //white checker
-        targetPointId = pointId - diceNumber; //move towards smaller points
-      } else if (sourceValue < 0) { //black checker
-        targetPointId = pointId + diceNumber; //move towards bigger points
-      }
-
-      if (sourceValue === 0) {
-        return prevBoard;
-      }
-
-      // Check if it's the correct turn based on piece color
-      if ((sourceValue > 0 && currentTurn !== 1) || (sourceValue < 0 && currentTurn !== -1)) {
-        return prevBoard;
-      }
-
-      //move checker from this point
-      if (sourceValue > 0) {
-        newBoard[pointId - 1] = sourceValue - 1;
-      } else {
-        newBoard[pointId - 1] = sourceValue + 1;
-      }
-
-      //move checker to this point 
-      if (targetPointId >= 1 && targetPointId <= 24) {
-        const targetValue = newBoard[targetPointId - 1];
-
-        if (sourceValue > 0) {
-          newBoard[targetPointId - 1] = targetValue + 1;
-        } else {
-          newBoard[targetPointId - 1] = targetValue - 1;
-        }
-      }
+      const newBoard = makeMove(prevBoard, pointId, diceNumber, currentTurn, prevBoard);
 
       // Increment moves count and check if turn should switch
       const newMovesCount = movesCount + 1;
       setMovesCount(newMovesCount);
 
       if (newMovesCount >= 2) {
-        setCurrentTurn(currentTurn === 1 ? -1 : 1);
+        setCurrentTurn(currentTurn === "white" ? "black" : "white");
         setMovesCount(0);
       }
 
@@ -68,19 +79,23 @@ export default function Index() {
   };
 
   return (
-    <View style={styles.board}>
-      <Leftbar />
-      <HalfBoard side="left" board={board} onPointPress={handlePointPress} />
-      <StaticsBar />
-      <HalfBoard side="right" board={board} onPointPress={handlePointPress} />
-      <Rightbar />
+    <View style={{flex:1}}>
+      <View style={styles.board}>
+        <Leftbar />
+        <HalfBoard side="left" board={board} onPointPress={handlePointPress} />
+        <StaticsBar />
+        <HalfBoard side="right" board={board} onPointPress={handlePointPress} />
+        <Rightbar />
+      </View>
     </View>
+
   );
 }
 
 const styles = StyleSheet.create({
   board: {
-    flex: 1,
+    aspectRatio: 16/9,
+
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: '#070024',

@@ -1,0 +1,26 @@
+import { View, Text, StyleSheet } from 'react-native';
+
+const Rightbar = () => {
+    return (
+        <View style={styles.rightBar}>
+            <View style={styles.checkersContainer} />
+            <View style={styles.checkersContainer} />
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    rightBar: {
+        width: '6%',
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+      },
+    checkersContainer: {
+        width: '70%',
+        backgroundColor: '#12184a',
+        height: '30%',
+      }
+});
+
+export default Rightbar;

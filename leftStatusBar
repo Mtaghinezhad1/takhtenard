@@ -1,0 +1,113 @@
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+} from 'react-native';
+
+const GameStatusBar = (props) => {
+  return (
+    <View style={styles.leftStatusBar}>
+      <View style={styles.topContainer}>
+        <Text style={styles.playerName}>shakiba</Text>
+        <View style={[styles.avatar, 
+        props.currentTurn === 'black' && styles.turn]} />
+        <Text style={styles.rating}>1400</Text>
+      </View>
+
+      <View style={styles.midContainer}>
+        <Text style={styles.midText}>
+          length<Text style={styles.span}>1</Text>
+        </Text>
+        <Text style={styles.midText}>
+          stake<Text style={styles.span}>300</Text>
+        </Text>
+        <View style={styles.hintBtn}>
+          <Text style={styles.hintBtnText}>hint</Text>
+        </View>
+      </View>
+
+      <View style={styles.bottomContainer}>
+        <Text style={styles.rating}>1500</Text>
+        <View style={[styles.avatar, 
+        props.currentTurn === 'white' && styles.turn]} />
+        <Text style={styles.playerName}>mohammad</Text>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  leftStatusBar: {
+    height: '100%',
+    width: '12%',
+    backgroundColor: '#070024',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  topContainer: {
+    width: '80%',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  midContainer: {
+    width: '80%',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: 'grey',
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  bottomContainer: {
+    width: '80%',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  playerName: {
+    color: 'white',
+    fontSize: 13,
+  },
+  rating: {
+    color: 'white',
+    fontSize: 13,
+  },
+  avatar: {
+    width: '80%',
+    aspectRatio: 1,
+    backgroundColor: 'grey',
+    borderRadius: 50,
+    borderWidth: 5,
+    borderColor: '#3e7ce3',
+    marginVertical: 10,
+    opacity: 0.9,
+  },
+  turn: {
+    transform: [{ scale: 1.1 }],
+    opacity: 1,
+  },
+  midText: {
+    color: 'grey',
+    fontSize: 13,
+    lineHeight: 19.5, // 13 * 1.5
+  },
+  span: {
+    paddingHorizontal: 5,
+    color: 'white',
+    fontSize: 13,
+  },
+  hintBtn: {
+    marginTop: 10,
+    backgroundColor: '#3e7ced',
+    borderRadius: 5,
+    padding: '5%',
+    alignSelf: 'stretch',
+    alignItems: 'center',
+  },
+  hintBtnText: {
+    color: 'white',
+    fontSize: 13,
+  },
+});
+
+export default GameStatusBar;

@@ -36,67 +36,11 @@ const Dice = () => {
   }, []);
 
   const renderDice = (diceNumber) => {
-    switch (diceNumber) {
-      case 1:
-        return (
-          <View style={styles.dice}>
-            <View style={[styles.dot, styles.centerDot]} />
-          </View>
-        );
-      
-      case 2:
-        return (
-          <View style={styles.dice}>
-            <View style={[styles.dot, styles.topLeftDot]} />
-            <View style={[styles.dot, styles.bottomRightDot]} />
-          </View>
-        );
-      
-      case 3:
-        return (
-          <View style={styles.dice}>
-            <View style={[styles.dot, styles.centerDot]} />
-            <View style={[styles.dot, styles.topLeftDot]} />
-            <View style={[styles.dot, styles.bottomRightDot]} />
-          </View>
-        );
-      
-      case 4:
-        return (
-          <View style={styles.dice}>
-            <View style={[styles.dot, styles.topLeftDot]} />
-            <View style={[styles.dot, styles.topRightDot]} />
-            <View style={[styles.dot, styles.bottomLeftDot]} />
-            <View style={[styles.dot, styles.bottomRightDot]} />
-          </View>
-        );
-      
-      case 5:
-        return (
-          <View style={styles.dice}>
-            <View style={[styles.dot, styles.centerDot]} />
-            <View style={[styles.dot, styles.topLeftDot]} />
-            <View style={[styles.dot, styles.topRightDot]} />
-            <View style={[styles.dot, styles.bottomLeftDot]} />
-            <View style={[styles.dot, styles.bottomRightDot]} />
-          </View>
-        );
-      
-      case 6:
-        return (
-          <View style={styles.dice}>
-            <View style={[styles.dot, styles.topLeftDot]} />
-            <View style={[styles.dot, styles.topRightDot]} />
-            <View style={[styles.dot, styles.middleLeftDot]} />
-            <View style={[styles.dot, styles.middleRightDot]} />
-            <View style={[styles.dot, styles.bottomLeftDot]} />
-            <View style={[styles.dot, styles.bottomRightDot]} />
-          </View>
-        );
-      
-      default:
-        return null;
-    }
+    return (
+      <View style={styles.dice}>
+        <Text style={styles.diceText}>{diceNumber}</Text>
+      </View>
+    );
   };
 
   return (
@@ -113,7 +57,7 @@ const Dice = () => {
 
 const styles = StyleSheet.create({
   diceContainer: {
-    backgroundColor: 'white',
+    height: '10%',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -122,60 +66,20 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   dice: {
-    width: 50,
-    height: 50,
-    backgroundColor: 'red',
-    borderRadius: 20,
-    borderWidth: 2,
+    height: '80%',
+    aspectRatio: 1,
+    borderRadius: '5%',
+    borderWidth: 1,
+    backgroundColor: 'white',
     borderColor: '#333',
-    position: 'relative',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    justifyContent: 'center',
+    alignItems: 'center',
     elevation: 5,
   },
-  dot: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: '#333',
-    position: 'absolute',
-  },
-  centerDot: {
-    top: '50%',
-    left: '50%',
-    marginTop: -9,
-    marginLeft: -9,
-  },
-  topLeftDot: {
-    top: 15,
-    left: 15,
-  },
-  topRightDot: {
-    top: 15,
-    right: 15,
-  },
-  middleLeftDot: {
-    top: '50%',
-    left: 15,
-    marginTop: -9,
-  },
-  middleRightDot: {
-    top: '50%',
-    right: 15,
-    marginTop: -9,
-  },
-  bottomLeftDot: {
-    bottom: 15,
-    left: 15,
-  },
-  bottomRightDot: {
-    bottom: 15,
-    right: 15,
+  diceText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
   },
   label: {
     marginTop: 20,

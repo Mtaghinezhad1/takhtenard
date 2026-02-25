@@ -1,7 +1,8 @@
 import { View, StyleSheet } from "react-native";
 import React from "react";
-import QuarterBoard from "./QuarterBoard";
-import { quarterPoints } from "@/constants/board";
+import QuarterBoard from "./quarterBoard";
+import { quarterPoints } from "@/constants/constants"; 
+import Dice from "./dice";
 
 const HalfBoard = ({ side, board, onPointPress }) => {
   const isLeft = side === 'left';
@@ -17,6 +18,7 @@ const HalfBoard = ({ side, board, onPointPress }) => {
           onPointPress={onPointPress} 
         />
       </View>
+      { !isLeft && <Dice/>}
       <View style={styles.quarterBoardBottom}>
         <QuarterBoard 
           pointIds={bottomQuarter} 
@@ -33,16 +35,19 @@ const styles = StyleSheet.create({
     width: '35%',
     height: '100%',
     backgroundColor: '#3e7ce3',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
   },
   quarterBoardTop: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    height: '50%',
+    height: '45%',
   },
   quarterBoardBottom: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    height: '50%',
+    height: '45%',
   },
 });
 

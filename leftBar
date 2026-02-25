@@ -1,0 +1,38 @@
+import { View, Text, StyleSheet } from 'react-native';
+
+const Leftbar = () => {
+    return (
+        <View style={styles.leftBar}>
+            <View style={styles.score}>
+                <Text style={styles.scoreText}>2</Text>
+            </View>
+            <View style={styles.score}>
+                <Text style={styles.scoreText}>0</Text>
+            </View>
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    leftBar: {
+        width: '6%',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      },
+      score: {
+        width: '80%',
+        aspectRatio: 1,
+        backgroundColor: 'white',
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      scoreText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#070024',
+      }
+});
+
+export default Leftbar;

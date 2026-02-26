@@ -1,0 +1,7 @@
+const [gameState, setGameState] = useState({
+    board: InitialBoard,
+    currentPlayer: 'white', // 1 سفید، -1 سیاه
+    dice: [], // تاس‌های ریخته شده
+    availableMoves: [], // حرکات ممکن
+    turnPhase: 'rolling' // 'rolling', 'moving', 'done'
+  });

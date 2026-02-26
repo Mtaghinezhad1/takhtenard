@@ -10,13 +10,6 @@ import StaticsBar from "@/components/index/staticsBat";
 import GameStatusBar from "@/components/index/leftStatusBar";
 
 export default function Index() {
-  const [gameState, setGameState] = useState({
-    board: InitialBoard,
-    currentPlayer: 'white', // 1 سفید، -1 سیاه
-    dice: [], // تاس‌های ریخته شده
-    availableMoves: [], // حرکات ممکن
-    turnPhase: 'rolling' // 'rolling', 'moving', 'done'
-  });
   const [board, setBoard] = useState(InitialBoard);
   const [currentTurn, setCurrentTurn] = useState("white");
   const [movesCount, setMovesCount] = useState(0);

@@ -5,3 +5,11 @@ const [gameState, setGameState] = useState({
     availableMoves: [], // حرکات ممکن
     turnPhase: 'rolling' // 'rolling', 'moving', 'done'
   });
+
+وقتی مهره ای رو میزنیم بره توی اندیس 25
+
+نشون دادن مهره های اندیس 25 توی وسط بار
+
+وقتی مهره ای رو می کشیم بره توی اندیس صفر
+
+نشون دادن مهره های اندیس 0 توی بار راست

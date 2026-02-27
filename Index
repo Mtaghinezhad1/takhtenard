@@ -20,6 +20,8 @@ export default function Index() {
   const [board, setBoard] = useState(InitialBoard);
   const [currentTurn, setCurrentTurn] = useState("white");
   const [movesCount, setMovesCount] = useState(0);
+  const [dice, setDice] = useState([1, 1]); // مقداردهی اولیه تاس‌ها
+
 
   // تابع اعتبارسنجی حرکت
 const isValidMove = (board, fromPoint, diceNumber, currentTurn) => {
@@ -112,10 +114,13 @@ const isValidMove = (board, fromPoint, diceNumber, currentTurn) => {
     return newBoard;
   };
 
-  const handlePointPress = (pointId, diceNumber = 2) => {
+  const handlePointPress = (pointId) => {
+    const diceNumber = dice[0];
     if(isValidMove(board,pointId,diceNumber,currentTurn)){
       setBoard(prevBoard => {
         const newBoard = makeMove(prevBoard, pointId, diceNumber, currentTurn, prevBoard);
+        
+        setDice(dice.slice(1));
   
         // Increment moves count and check if turn should switch
         const newMovesCount = movesCount + 1;
@@ -124,6 +129,7 @@ const isValidMove = (board, fromPoint, diceNumber, currentTurn) => {
         if (newMovesCount >= 2) {
           setCurrentTurn(currentTurn === "white" ? "black" : "white");
           setMovesCount(0);
+          setDice([1,1]);
         }
   
         return newBoard;

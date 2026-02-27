@@ -1,7 +1,7 @@
 import Leftbar from "@/components/index/Leftbar";
 import Rightbar from "@/components/index/rightbar";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { InitialBoard } from "@/constants/constants";
 
 
@@ -22,49 +22,56 @@ export default function Index() {
   const [movesCount, setMovesCount] = useState(0);
   const [dice, setDice] = useState([1, 1]); // مقداردهی اولیه تاس‌ها
 
+  // تابع ریختن تاس
+  const rollDice = () => {
+    const dice1 = Math.floor(Math.random() * 6) + 1;
+    const dice2 = Math.floor(Math.random() * 6) + 1;
+
+    setDice([dice1, dice2]);
+  };
 
   // تابع اعتبارسنجی حرکت
-const isValidMove = (board, fromPoint, diceNumber, currentTurn) => {
-  // 1. بررسی معتبر بودن نقطه مبدا
-  if (fromPoint < 1 || fromPoint > 24) return false;
-  
-  const sourceValue = board[fromPoint - 1];
-  
-  // 2. بررسی وجود مهره در مبدا
-  if (sourceValue === 0) return false;
-  
-  // 3. بررسی تعلق مهره به بازیکن فعلی
-  if ((sourceValue > 0 && currentTurn !== 'white') || 
+  const isValidMove = (board, fromPoint, diceNumber, currentTurn) => {
+    // 1. بررسی معتبر بودن نقطه مبدا
+    if (fromPoint < 1 || fromPoint > 24) return false;
+
+    const sourceValue = board[fromPoint - 1];
+
+    // 2. بررسی وجود مهره در مبدا
+    if (sourceValue === 0) return false;
+
+    // 3. بررسی تعلق مهره به بازیکن فعلی
+    if ((sourceValue > 0 && currentTurn !== 'white') ||
       (sourceValue < 0 && currentTurn !== 'black')) {
-    return false;
-  }
-  
-  // 4. محاسبه نقطه مقصد بر اساس جهت حرکت
-  let targetPoint;
-  if (currentTurn == 'white') { // سفید: حرکت به سمت چپ (کاهش شماره)
-    targetPoint = fromPoint - diceNumber;
-  } else { // سیاه: حرکت به سمت راست (افزایش شماره)
-    targetPoint = fromPoint + diceNumber;
-  }
-  
-  // 5. بررسی خارج از تخته نبودن
-  if (targetPoint < 1 || targetPoint > 24) {
-    // TODO: منطق بیرون انداختن مهره (bear off) را بعداً اضافه کنید
-    return false;
-  }
-  
-  const targetValue = board[targetPoint - 1];
-  
-  // 6. بررسی اشغال بودن نقطه مقصد توسط حریف
-  // اگر در نقطه مقصد مهره حریف باشد و تعداد آن بیشتر از 1 باشد، حرکت مجاز نیست
-  if ((targetValue < -1 && currentTurn == 'white') || (targetValue > 1 && currentTurn == 'black')) {
-    return false; // نقطه توسط بیش از یک مهره حریف اشغال شده
-  }
-  
-  // TODO: قوانین دیگر مانند تاس‌های تکراری، حرکت با هر دو تاس و ...
-  
-  return true;
-};
+      return false;
+    }
+
+    // 4. محاسبه نقطه مقصد بر اساس جهت حرکت
+    let targetPoint;
+    if (currentTurn == 'white') { // سفید: حرکت به سمت چپ (کاهش شماره)
+      targetPoint = fromPoint - diceNumber;
+    } else { // سیاه: حرکت به سمت راست (افزایش شماره)
+      targetPoint = fromPoint + diceNumber;
+    }
+
+    // 5. بررسی خارج از تخته نبودن
+    if (targetPoint < 1 || targetPoint > 24) {
+      // TODO: منطق بیرون انداختن مهره (bear off) را بعداً اضافه کنید
+      return false;
+    }
+
+    const targetValue = board[targetPoint - 1];
+
+    // 6. بررسی اشغال بودن نقطه مقصد توسط حریف
+    // اگر در نقطه مقصد مهره حریف باشد و تعداد آن بیشتر از 1 باشد، حرکت مجاز نیست
+    if ((targetValue < -1 && currentTurn == 'white') || (targetValue > 1 && currentTurn == 'black')) {
+      return false; // نقطه توسط بیش از یک مهره حریف اشغال شده
+    }
+
+    // TODO: قوانین دیگر مانند تاس‌های تکراری، حرکت با هر دو تاس و ...
+
+    return true;
+  };
 
   // تابع اجرای حرکت
   const makeMove = (board, fromPoint, diceNumber, currentTurn, prevBoard) => {
@@ -116,32 +123,36 @@ const isValidMove = (board, fromPoint, diceNumber, currentTurn) => {
 
   const handlePointPress = (pointId) => {
     const diceNumber = dice[0];
-    if(isValidMove(board,pointId,diceNumber,currentTurn)){
+    if (isValidMove(board, pointId, diceNumber, currentTurn)) {
       setBoard(prevBoard => {
         const newBoard = makeMove(prevBoard, pointId, diceNumber, currentTurn, prevBoard);
-        
+
         setDice(dice.slice(1));
-  
+
         // Increment moves count and check if turn should switch
         const newMovesCount = movesCount + 1;
         setMovesCount(newMovesCount);
-  
+
         if (newMovesCount >= 2) {
           setCurrentTurn(currentTurn === "white" ? "black" : "white");
           setMovesCount(0);
-          setDice([1,1]);
+          rollDice();
         }
-  
+
         return newBoard;
       });
     }
-    
   };
 
+  // ریختن تاس در شروع بازی
+  useEffect(() => {
+    rollDice();
+  }, []);
+
   return (
-    <View style={{flex:1}}>
+    <View style={{ flex: 1 }}>
       <View style={styles.board}>
-        <GameStatusBar currentTurn={currentTurn}/>
+        <GameStatusBar currentTurn={currentTurn} />
         <Leftbar />
         <HalfBoard side="left" board={board} onPointPress={handlePointPress} />
         <StaticsBar />
@@ -155,7 +166,7 @@ const isValidMove = (board, fromPoint, diceNumber, currentTurn) => {
 
 const styles = StyleSheet.create({
   board: {
-    aspectRatio: 16/9,
+    aspectRatio: 16 / 9,
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: '#070024',

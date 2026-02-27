@@ -1,31 +1,41 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ImageBackground } from "react-native";
 import React from "react";
 import QuarterBoard from "./quarterBoard";
-import { quarterPoints } from "@/constants/constants"; 
+import { quarterPoints } from "@/constants/constants";
 import Dice from "./dice";
 
-const HalfBoard = ({ side, board, onPointPress }) => {
+const HalfBoard = ({ side, dice, board, onPointPress }) => {
   const isLeft = side === 'left';
   const topQuarter = isLeft ? quarterPoints.topLeft : quarterPoints.topRight;
   const bottomQuarter = isLeft ? quarterPoints.bottomLeft : quarterPoints.bottomRight;
 
   return (
     <View style={styles.halfBoard}>
-      <View style={styles.quarterBoardTop}>
-        <QuarterBoard 
-          pointIds={topQuarter} 
-          board={board} 
-          onPointPress={onPointPress} 
-        />
-      </View>
-      { !isLeft && <Dice/>}
-      <View style={styles.quarterBoardBottom}>
-        <QuarterBoard 
-          pointIds={bottomQuarter} 
-          board={board} 
-          onPointPress={onPointPress} 
-        />
-      </View>
+      <ImageBackground
+        source={require('@/assets/images/halfBoard.jpg')} // Local image
+        // or
+        // source={{ uri: 'https://example.com/background.jpg' }} // Remote image
+        style={styles.container}
+        resizeMode="cover" // or 'contain', 'stretch', 'repeat', 'center'
+      >
+        <View style={styles.quarterBoardTop}>
+          <QuarterBoard
+            pointIds={topQuarter}
+            board={board}
+            onPointPress={onPointPress}
+          />
+        </View>
+        {!isLeft && <Dice dice={dice} />}
+        <View style={styles.quarterBoardBottom}>
+          <QuarterBoard
+            pointIds={bottomQuarter}
+            board={board}
+            onPointPress={onPointPress}
+          />
+        </View>
+
+      </ImageBackground>
+
     </View>
   );
 };
@@ -37,7 +47,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#3e7ce3',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    overflow: 'hidden'
   },
   quarterBoardTop: {
     flexDirection: 'row',
@@ -48,6 +59,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     height: '45%',
+  },
+  container: {
+    height: '100%',
+    width: '100%',
   },
 });
 

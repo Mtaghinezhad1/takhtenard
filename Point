@@ -26,9 +26,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    height: '90%',
-    borderWidth: 1,
-    borderColor: 'black',
+    height: '100%',
   },
   checker: {
     width: '80%',

@@ -10,6 +10,13 @@ import StaticsBar from "@/components/index/staticsBat";
 import GameStatusBar from "@/components/index/leftStatusBar";
 
 export default function Index() {
+  const [gameState, setGameState] = useState({
+    board: InitialBoard,
+    currentPlayer: 'white', // 1 سفید، -1 سیاه
+    dice: [], // تاس‌های ریخته شده
+    availableMoves: [], // حرکات ممکن
+    turnPhase: 'rolling' // 'rolling', 'moving', 'done'
+  });
   const [board, setBoard] = useState(InitialBoard);
   const [currentTurn, setCurrentTurn] = useState("white");
   const [movesCount, setMovesCount] = useState(0);
@@ -48,7 +55,7 @@ const isValidMove = (board, fromPoint, diceNumber, currentTurn) => {
   
   // 6. بررسی اشغال بودن نقطه مقصد توسط حریف
   // اگر در نقطه مقصد مهره حریف باشد و تعداد آن بیشتر از 1 باشد، حرکت مجاز نیست
-  if (targetValue * currentTurn < -1) {
+  if ((targetValue < -1 && currentTurn == 'white') || (targetValue > 1 && currentTurn == 'black')) {
     return false; // نقطه توسط بیش از یک مهره حریف اشغال شده
   }
   

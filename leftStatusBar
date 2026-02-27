@@ -10,8 +10,9 @@ const GameStatusBar = (props) => {
     <View style={styles.leftStatusBar}>
       <View style={styles.topContainer}>
         <Text style={styles.playerName}>shakiba</Text>
-        <View style={[styles.avatar, 
-        props.currentTurn === 'black' && styles.turn]} />
+        <View style={styles.showTurn}>
+          <View style={styles.avatar} />
+        </View>
         <Text style={styles.rating}>1400</Text>
       </View>
 
@@ -29,8 +30,9 @@ const GameStatusBar = (props) => {
 
       <View style={styles.bottomContainer}>
         <Text style={styles.rating}>1500</Text>
-        <View style={[styles.avatar, 
-        props.currentTurn === 'white' && styles.turn]} />
+        <View style={styles.showTurn}>
+          <View style={styles.avatar} />
+        </View>
         <Text style={styles.playerName}>mohammad</Text>
       </View>
     </View>
@@ -72,19 +74,25 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 13,
   },
+  showTurn: {
+    width: '100%',
+    aspectRatio: 1,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: '50%',
+    borderWidth: 5,
+    borderColor: 'orange',
+    marginVertical: 10,
+  },
   avatar: {
     width: '80%',
     aspectRatio: 1,
     backgroundColor: 'grey',
-    borderRadius: 50,
+    borderRadius: '50%',
     borderWidth: 5,
     borderColor: '#3e7ce3',
     marginVertical: 10,
-    opacity: 0.9,
-  },
-  turn: {
-    transform: [{ scale: 1.1 }],
-    opacity: 1,
   },
   midText: {
     color: 'grey',

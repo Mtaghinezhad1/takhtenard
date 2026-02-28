@@ -32,6 +32,50 @@ export default function Index() {
 
   // تابع اعتبارسنجی حرکت
   const isValidMove = (board, fromPoint, diceNumber, currentTurn) => {
+    // بررسی وجود مهره در بار برای بازیکن فعلی
+    const whiteBarCount = board[25]; // مهره‌های سفید در بار
+    const blackBarCount = board[0];  // مهره‌های سیاه در بار
+
+    // اگر مهره‌ای در بار وجود دارد، باید ابتدا آن‌ها را وارد بازی کرد
+    if (currentTurn === 'white' && whiteBarCount > 0) {
+      // اگر مهره سفید در بار است، فقط می‌تواند از بار وارد بازی شود
+      if (fromPoint !== 25) {
+        return false; // باید ابتدا مهره را از بار وارد کند
+      }
+
+      // محاسبه نقطه ورود برای مهره سفید (از بار به تخته)
+      // مهره سفید از بار (25) به نقطه 25-diceNumber می‌رود
+      const entryPoint = 25 - diceNumber;
+      if (entryPoint < 1 || entryPoint > 24) return false;
+
+      const targetValue = board[entryPoint];
+      // بررسی اشغال بودن نقطه ورود توسط حریف
+      if (targetValue < -1) return false; // نقطه توسط بیش از یک مهره حریف اشغال شده
+
+      return true;
+    }
+
+    if (currentTurn === 'black' && blackBarCount < 0) {
+      // اگر مهره سیاه در بار است، فقط می‌تواند از بار وارد بازی شود
+      if (fromPoint !== 0) {
+        return false; // باید ابتدا مهره را از بار وارد کند
+      }
+
+      // محاسبه نقطه ورود برای مهره سیاه (از بار به تخته)
+      // مهره سیاه از بار (0) به نقطه diceNumber می‌رود
+      const entryPoint = diceNumber;
+      if (entryPoint < 1 || entryPoint > 24) return false;
+
+      const targetValue = board[entryPoint];
+      // بررسی اشغال بودن نقطه ورود توسط حریف
+      if (targetValue > 1) return false; // نقطه توسط بیش از یک مهره حریف اشغال شده
+
+      return true;
+    }
+
+
+
+
     // 1. بررسی معتبر بودن نقطه مبدا
     if (fromPoint < 1 || fromPoint > 24) return false;
 
@@ -100,20 +144,31 @@ export default function Index() {
       newBoard[fromPoint] = sourceValue + 1;
     }
 
-    // افزایش مهره به مقصد (با در نظر گرفتن خوردن مهره حریف)
-    if (sourceValue > 0) {
-      // اگر در مقصد مهره حریف تنها باشد (blot)
+    // مدیریت نقطه مقصد
+    if (sourceValue > 0) { // حرکت مهره سفید
       if (targetValue === -1) {
-        // مهره حریف خورده می‌شود و به bar می‌رود
-        // TODO: منطق ارسال به bar را اضافه کنید
-        newBoard[targetPoint] = 1;
+        // خوردن مهره سیاه تنها (blot)
+        newBoard[targetPoint] = 1; // مهره سفید در مقصد قرار می‌گیرد
+        // مهره سیاه خورده شده به بار سیاه (index 0) می‌رود
+        newBoard[0] = newBoard[0] - 1; // افزایش مهره سیاه در بار
+      } else if (targetValue < 0) {
+        // مقصد پر از مهره سیاه است - این حالت نباید رخ دهد چون isValidMove باید جلوگیری کند
+        return prevBoard;
       } else {
+        // مقصد خالی یا دارای مهره سفید
         newBoard[targetPoint] = targetValue + 1;
       }
-    } else {
+    } else { // حرکت مهره سیاه
       if (targetValue === 1) {
-        newBoard[targetPoint] = -1;
+        // خوردن مهره سفید تنها (blot)
+        newBoard[targetPoint] = -1; // مهره سیاه در مقصد قرار می‌گیرد
+        // مهره سفید خورده شده به بار سفید (index 25) می‌رود
+        newBoard[25] = newBoard[25] + 1; // افزایش مهره سفید در بار
+      } else if (targetValue > 0) {
+        // مقصد پر از مهره سفید است - این حالت نباید رخ دهد
+        return prevBoard;
       } else {
+        // مقصد خالی یا دارای مهره سیاه
         newBoard[targetPoint] = targetValue - 1;
       }
     }
@@ -155,7 +210,7 @@ export default function Index() {
         <GameStatusBar currentTurn={currentTurn} />
         <Leftbar />
         <HalfBoard side="left" dice={dice} board={board} onPointPress={handlePointPress} />
-        <StaticsBar />
+        <StaticsBar blackCaptured={board[0]} whiteCaptured={board[25]} />
         <HalfBoard side="right" dice={dice} board={board} onPointPress={handlePointPress} />
         <Rightbar />
       </View>
